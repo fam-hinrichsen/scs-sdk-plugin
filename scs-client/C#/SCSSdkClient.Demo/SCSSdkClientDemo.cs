@@ -6,6 +6,7 @@ using SCSSdkClient.Object;
 namespace SCSSdkClient.Demo {
     /// <inheritdoc />
     public partial class SCSSdkClientDemo : Form {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         /// <summary>
         /// The SCSSdkTelemetry object
         /// </summary>
@@ -20,15 +21,6 @@ namespace SCSSdkClient.Demo {
             Telemetry.JobStarted += TelemetryOnJobStarted;
             Telemetry.TrailerConnected += TelemetryTrailerConnected;
             Telemetry.TrailerDisconnected += TelemetryTrailerDisconnected;
-            if (Telemetry.Error != null) {
-                lbGeneral.Text =
-                    "General info:\r\nFailed to open memory map " +
-                    Telemetry.Map +
-                    " - on some systems you need to run the client (this app) with elevated permissions, because e.g. you're running Steam/ETS2 with elevated permissions as well. .NET reported the following Exception:\r\n" +
-                    Telemetry.Error.Message +
-                    "\r\n\r\nStacktrace:\r\n" +
-                    Telemetry.Error.StackTrace;
-            } 
         }
 
         private void TelemetryOnJobFinished(object sender, EventArgs args) =>
@@ -80,7 +72,7 @@ namespace SCSSdkClient.Demo {
                  
             } catch (Exception ex) {
                 // ignored atm i found no proper way to shut the telemetry down and down call this anymore when this or another thing is already disposed
-                Console.WriteLine("Telemetry was closed: "+ ex); 
+                log.Error("Exception in telemetry data.", ex);
             }
         }
 

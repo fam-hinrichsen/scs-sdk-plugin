@@ -3,7 +3,9 @@ using System.IO.MemoryMappedFiles;
 using SCSSdkClient.Object;
 
 namespace SCSSdkClient {
-    public class SharedMemory {
+    public class SharedMemory
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private const uint defaultMapSize = 16 * 1024;
         private readonly SCSSdkConvert alt = new SCSSdkConvert();
 
@@ -11,7 +13,6 @@ namespace SCSSdkClient {
         private MemoryMappedViewAccessor memoryMappedView;
 
         public bool Hooked { get; private set; }
-        public Exception HookException { get; private set; }
 
         public byte[] RawData { get; private set; }
 
@@ -21,10 +22,7 @@ namespace SCSSdkClient {
             if (Hooked) {
                 Disconnect();
             }
-
-            // Reset any errors
-            HookException = null;
-
+            
             try {
                 RawData = new byte[mapSize];
 
@@ -37,7 +35,7 @@ namespace SCSSdkClient {
             } catch (Exception e) {
                 // We were unable to hook onto the map.
                 Hooked = false;
-                HookException = e;
+                log.Fatal("Unable to hook onto the SharedMemory map.", e);
             }
         }
 

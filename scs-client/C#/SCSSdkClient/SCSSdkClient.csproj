@@ -82,7 +82,7 @@
     <Compile Include="Object\truck\current\Lights.cs" />
     <Compile Include="Object\truck\current\Motor.cs" />
     <Compile Include="Object\truck\current\Wheels.cs" />
-    <Compile Include="SCSGame.cs" />
+    <Compile Include="Enums\SCSGame.cs" />
     <Compile Include="SCSSdkConvert.cs" />
     <Compile Include="SCSSdkTelemetry.cs" />
     <Compile Include="Object\Common.cs" />

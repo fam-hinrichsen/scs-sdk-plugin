@@ -81,7 +81,6 @@ namespace SCSSdkClient
             SharedMemory.Connect(map);
 
             if (!SharedMemory.Hooked) {
-                Error = SharedMemory.HookException;
                 return;
             }
 
