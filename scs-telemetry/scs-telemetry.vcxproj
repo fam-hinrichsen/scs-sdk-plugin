@@ -19,10 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\log.cpp" />
-    <ClCompile Include="..\src\scs_telemetry.cpp" />
-    <ClCompile Include="..\src\scs_config_handlers.cpp" />
-    <ClCompile Include="..\src\sharedmemory.cpp" />
+    <ClInclude Include="inc\log.hpp" />
+    <ClInclude Include="inc\scs-telemetry-common.hpp" />
+    <ClInclude Include="inc\scs_config_handlers.hpp" />
+    <ClInclude Include="inc\sharedmemory.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\log.cpp" />
+    <ClCompile Include="src\scs_config_handlers.cpp" />
+    <ClCompile Include="src\scs_telemetry.cpp" />
+    <ClCompile Include="src\sharedmemory.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0B739935-E779-415A-B76C-0073EAE72A81}</ProjectGuid>
@@ -147,7 +153,8 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copy "C:\Projects\Software\ets2-sdk-plugin\scs-telemetry\Debug\scs-telemetry.dll" "C:\Program Files (x86)\Steam\SteamApps\common\Euro Truck Simulator 2\bin\win_x86\plugins\ets2-telemetry.dll"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
