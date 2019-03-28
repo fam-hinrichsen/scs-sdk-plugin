@@ -222,9 +222,9 @@ namespace SCSSdkClient {
             retData.TruckValues.Positioning.Cabin = GetFVector();
             retData.TruckValues.Positioning.Head = GetFVector();
             retData.TruckValues.Positioning.Hook = GetFVector();
-            var tempPos = new SCSTelemetry.FVector[WheelSize];
+            var tempPos = new FVector[WheelSize];
             for (var j = 0; j < WheelSize; j++) {
-                tempPos[j] = new SCSTelemetry.FVector {X = GetFloat()};
+                tempPos[j] = new FVector {X = GetFloat()};
             }
 
             for (var j = 0; j < WheelSize; j++) {
@@ -238,10 +238,10 @@ namespace SCSSdkClient {
             retData.TruckValues.ConstantsValues.WheelsValues.PositionValues = tempPos;
 
          retData.TrailerValues.Hook=  GetFVector(); 
-             tempPos = new SCSTelemetry.FVector[WheelSize];
+             tempPos = new FVector[WheelSize];
             for (var j = 0; j < WheelSize; j++)
             {
-                tempPos[j] = new SCSTelemetry.FVector { X = GetFloat() };
+                tempPos[j] = new FVector { X = GetFloat() };
             }
 
             for (var j = 0; j < WheelSize; j++)
@@ -339,7 +339,7 @@ namespace SCSSdkClient {
             for (var i = 0; i < Substances; i++) {
                 var tempSubstance = GetString();
                 if (tempSubstance.Length != 0) {
-                    retData.Substances.Add(new SCSTelemetry.Substance{Index =i, Value = tempSubstance});
+                    retData.Substances.Add(new Substance{Index =i, Value = tempSubstance});
                 }
             }
 
@@ -470,29 +470,29 @@ namespace SCSSdkClient {
             return res;
         }
 
-        private SCSTelemetry.FVector GetFVector() {
-            return new SCSTelemetry.FVector {X = GetFloat(), Y = GetFloat(), Z = GetFloat()};
+        private FVector GetFVector() {
+            return new FVector {X = GetFloat(), Y = GetFloat(), Z = GetFloat()};
         }
 
-        private SCSTelemetry.DVector GetDVector() {
-            return new SCSTelemetry.DVector {X = GetDouble(), Y = GetDouble(), Z = GetDouble()};
+        private DVector GetDVector() {
+            return new DVector {X = GetDouble(), Y = GetDouble(), Z = GetDouble()};
         }
 
-        private SCSTelemetry.Euler GetEuler() {
-            return new SCSTelemetry.Euler {Heading = GetFloat(), Pitch = GetFloat(), Roll = GetFloat()};
+        private Euler GetEuler() {
+            return new Euler {Heading = GetFloat(), Pitch = GetFloat(), Roll = GetFloat()};
         }
 
-        private SCSTelemetry.Euler GetDEuler() {
-            return new SCSTelemetry.Euler
+        private Euler GetDEuler() {
+            return new Euler
                    {Heading = (float) GetDouble(), Pitch = (float) GetDouble(), Roll = (float) GetDouble()};
         }
 
-        private SCSTelemetry.FPlacement GetFPlacement() {
-            return new SCSTelemetry.FPlacement {Position = GetFVector(), Orientation = GetEuler()};
+        private FPlacement GetFPlacement() {
+            return new FPlacement {Position = GetFVector(), Orientation = GetEuler()};
         }
 
-        private SCSTelemetry.DPlacement GetDPlacement() {
-            return new SCSTelemetry.DPlacement {Position = GetDVector(), Orientation = GetDEuler()};
+        private DPlacement GetDPlacement() {
+            return new DPlacement {Position = GetDVector(), Orientation = GetDEuler()};
         }
 
         private long GetLong() {
