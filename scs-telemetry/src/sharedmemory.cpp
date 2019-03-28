@@ -77,5 +77,4 @@ void SharedMemory::Close() {
     }
 
     isSharedMemoryHooked = false;
-
 }

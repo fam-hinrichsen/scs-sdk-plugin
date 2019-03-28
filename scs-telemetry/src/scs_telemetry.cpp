@@ -1,6 +1,5 @@
 //Windows stuff.
 
-
 #define WINVER 0x0500
 #define WIN32_WINNT 0x0500
  
@@ -8,8 +7,8 @@
 #include <cassert>
 #include <cstdarg>
 #include <algorithm>
-// SDK
 
+// SDK
 #include "scssdk_telemetry.h"
 #include "eurotrucks2/scssdk_eut2.h"
 #include "eurotrucks2/scssdk_telemetry_eut2.h"
@@ -62,6 +61,7 @@ void log_line(const scs_log_type_t type, const char*const text, ...) {
     if (!game_log) {
         return;
     }
+
     char formated[1000];
 
     va_list args;
@@ -79,6 +79,7 @@ void log_line(const char*const text, ...) {
     if (!game_log) {
         return;
     }
+
     char formated[1000];
 
     va_list args;
@@ -97,101 +98,85 @@ void log_line(const char*const text, ...) {
 void log_configs(const scs_telemetry_configuration_t* info) { 
     log_line("Configuration: %s", info->id);
     for (auto current = info->attributes; current->name; ++current) {
-
         if (current->index != SCS_U32_NIL) {
            // log_line("[%u]", static_cast<unsigned>(current->index));
         }
+
         switch (current->value.type) {
-        case SCS_VALUE_TYPE_INVALID: {
-            log_line(" %s none", current->name);
-            break;
+            case SCS_VALUE_TYPE_INVALID: 
+                log_line(" %s none", current->name);
+                break;
+            case SCS_VALUE_TYPE_bool: 
+                log_line(" %s bool = %s", current->name, current->value.value_bool.value ? "true" : "false");
+                break;
+            case SCS_VALUE_TYPE_s32: 
+                log_line(" %s s32 = %d", current->name, static_cast<int>(current->value.value_s32.value));
+                break;
+            case SCS_VALUE_TYPE_u32: 
+                log_line(" %s u32 = %u", current->name, static_cast<unsigned>(current->value.value_u32.value));
+                break;
+            case SCS_VALUE_TYPE_u64: 
+                log_line(" %s u64 = %" SCS_PF_U64, current->name, current->value.value_u64.value);
+                break;
+            case SCS_VALUE_TYPE_float: 
+                log_line(" %s float = %f", current->name, current->value.value_float.value);
+                break;
+            case SCS_VALUE_TYPE_double: 
+                log_line(" %s double = %f", current->name, current->value.value_double.value);
+                break;
+            case SCS_VALUE_TYPE_fvector: 
+                log_line(
+                    " %s fvector = (%f,%f,%f)", current->name,
+                    current->value.value_fvector.x,
+                    current->value.value_fvector.y,
+                    current->value.value_fvector.z
+                );
+                break;
+            case SCS_VALUE_TYPE_dvector: 
+                log_line(
+                    " %s dvector = (%f,%f,%f)", current->name,
+                    current->value.value_dvector.x,
+                    current->value.value_dvector.y,
+                    current->value.value_dvector.z
+                );
+                break;
+            case SCS_VALUE_TYPE_euler: 
+                log_line(
+                    " %s euler = h:%f p:%f r:%f", current->name,
+                    current->value.value_euler.heading * 360.0f,
+                    current->value.value_euler.pitch * 360.0f,
+                    current->value.value_euler.roll * 360.0f
+                );
+                break;
+            case SCS_VALUE_TYPE_fplacement: 
+                log_line(
+                    " %s fplacement = (%f,%f,%f) h:%f p:%f r:%f", current->name,
+                    current->value.value_fplacement.position.x,
+                    current->value.value_fplacement.position.y,
+                    current->value.value_fplacement.position.z,
+                    current->value.value_fplacement.orientation.heading * 360.0f,
+                    current->value.value_fplacement.orientation.pitch * 360.0f,
+                    current->value.value_fplacement.orientation.roll * 360.0f
+                );
+                break;
+            case SCS_VALUE_TYPE_dplacement: 
+                log_line(
+                    " %s dplacement = (%f,%f,%f) h:%f p:%f r:%f", current->name,
+                    current->value.value_dplacement.position.x,
+                    current->value.value_dplacement.position.y,
+                    current->value.value_dplacement.position.z,
+                    current->value.value_dplacement.orientation.heading * 360.0f,
+                    current->value.value_dplacement.orientation.pitch * 360.0f,
+                    current->value.value_dplacement.orientation.roll * 360.0f
+                );
+                break;
+            case SCS_VALUE_TYPE_string: 
+                log_line(" %s string = %s", current->name, current->value.value_string.value);
+                break;
+            default: 
+                log_line(" %s unknown", current->name);
+                break;
         }
-        case SCS_VALUE_TYPE_bool: {
-            log_line(" %s bool = %s", current->name, current->value.value_bool.value ? "true" : "false");
-            break;
-        }
-        case SCS_VALUE_TYPE_s32: {
-            log_line(" %s s32 = %d", current->name, static_cast<int>(current->value.value_s32.value));
-            break;
-        }
-        case SCS_VALUE_TYPE_u32: {
-            log_line(" %s u32 = %u", current->name, static_cast<unsigned>(current->value.value_u32.value));
-            break;
-        }
-        case SCS_VALUE_TYPE_u64: {
-            log_line(" %s u64 = %" SCS_PF_U64, current->name, current->value.value_u64.value);
-            break;
-        }
-        case SCS_VALUE_TYPE_float: {
-            log_line(" %s float = %f", current->name, current->value.value_float.value);
-            break;
-        }
-        case SCS_VALUE_TYPE_double: {
-            log_line(" %s double = %f", current->name, current->value.value_double.value);
-            break;
-        }
-        case SCS_VALUE_TYPE_fvector: {
-            log_line(
-                " %s fvector = (%f,%f,%f)", current->name,
-                current->value.value_fvector.x,
-                current->value.value_fvector.y,
-                current->value.value_fvector.z
-            );
-            break;
-        }
-        case SCS_VALUE_TYPE_dvector: {
-            log_line(
-                " %s dvector = (%f,%f,%f)", current->name,
-                current->value.value_dvector.x,
-                current->value.value_dvector.y,
-                current->value.value_dvector.z
-            );
-            break;
-        }
-        case SCS_VALUE_TYPE_euler: {
-            log_line(
-                " %s euler = h:%f p:%f r:%f", current->name,
-                current->value.value_euler.heading * 360.0f,
-                current->value.value_euler.pitch * 360.0f,
-                current->value.value_euler.roll * 360.0f
-            );
-            break;
-        }
-        case SCS_VALUE_TYPE_fplacement: {
-            log_line(
-                " %s fplacement = (%f,%f,%f) h:%f p:%f r:%f", current->name,
-                current->value.value_fplacement.position.x,
-                current->value.value_fplacement.position.y,
-                current->value.value_fplacement.position.z,
-                current->value.value_fplacement.orientation.heading * 360.0f,
-                current->value.value_fplacement.orientation.pitch * 360.0f,
-                current->value.value_fplacement.orientation.roll * 360.0f
-            );
-            break;
-        }
-        case SCS_VALUE_TYPE_dplacement: {
-            log_line(
-                " %s dplacement = (%f,%f,%f) h:%f p:%f r:%f", current->name,
-                current->value.value_dplacement.position.x,
-                current->value.value_dplacement.position.y,
-                current->value.value_dplacement.position.z,
-                current->value.value_dplacement.orientation.heading * 360.0f,
-                current->value.value_dplacement.orientation.pitch * 360.0f,
-                current->value.value_dplacement.orientation.roll * 360.0f
-            );
-            break;
-        }
-        case SCS_VALUE_TYPE_string: {
-            log_line(" %s string = %s", current->name, current->value.value_string.value);
-            break;
-        }
-        default: {
-            log_line(" %s unknown", current->name);
-            break;
-        }
-
-        }
-
     }
 }
 
@@ -205,80 +190,78 @@ static auto clear_job_ticker = 0;
 // Function: set_job_values_zero
 // set every job (cargo) values to 0/empty string
 void set_job_values_zero() {
-	telem_ptr->config_o.jobIncome = 0;
-	telem_ptr->config_ui.time_abs_delivery = 0;
-	telem_ptr->config_f.cargoMass = 0;
-	memset(telem_ptr->config_s.compDstId, 0, stringsize);
-	memset(telem_ptr->config_s.compSrcId, 0, stringsize);
-	memset(telem_ptr->config_s.cityDstId, 0, stringsize);
-	memset(telem_ptr->config_s.citySrcId, 0, stringsize);
-	memset(telem_ptr->config_s.citySrc, 0, stringsize);
-	memset(telem_ptr->config_s.cityDst, 0, stringsize);
-	memset(telem_ptr->config_s.compSrc, 0, stringsize);
-	memset(telem_ptr->config_s.compDst, 0, stringsize);
-	memset(telem_ptr->config_s.cargoId, 0, stringsize);
-	memset(telem_ptr->config_s.cargoAcessoryId, 0, stringsize);
-	memset(telem_ptr->config_s.cargo, 0, stringsize);
+	  telem_ptr->config_o.jobIncome = 0;
+	  telem_ptr->config_ui.time_abs_delivery = 0;
+	  telem_ptr->config_f.cargoMass = 0;
+	  memset(telem_ptr->config_s.compDstId, 0, stringsize);
+	  memset(telem_ptr->config_s.compSrcId, 0, stringsize);
+	  memset(telem_ptr->config_s.cityDstId, 0, stringsize);
+	  memset(telem_ptr->config_s.citySrcId, 0, stringsize);
+	  memset(telem_ptr->config_s.citySrc, 0, stringsize);
+	  memset(telem_ptr->config_s.cityDst, 0, stringsize);
+	  memset(telem_ptr->config_s.compSrc, 0, stringsize);
+	  memset(telem_ptr->config_s.compDst, 0, stringsize);
+	  memset(telem_ptr->config_s.cargoId, 0, stringsize);
+	  memset(telem_ptr->config_s.cargoAcessoryId, 0, stringsize);
+	  memset(telem_ptr->config_s.cargo, 0, stringsize);
 }
 // Function: set_trailer_values_zero
 // set every trailer value 0/empty string 
-void set_trailer_values_zero() {
-    
-	telem_ptr->truck_f.wearTrailer = 0;
-	std::fill(telem_ptr->truck_ui.trailer_wheelSubstance, telem_ptr->truck_ui.trailer_wheelSubstance+16, 0u);
-	std::fill(telem_ptr->truck_f.trailer_wheelSuspDeflection, telem_ptr->truck_f.trailer_wheelSuspDeflection + 16, 0.0f);
-	std::fill(telem_ptr->truck_f.trailer_wheelVelocity, telem_ptr->truck_f.trailer_wheelVelocity + 16, 0.0f);
-	std::fill(telem_ptr->truck_f.trailer_wheelSteering, telem_ptr->truck_f.trailer_wheelSteering + 16, 0.0f);
-	std::fill(telem_ptr->truck_f.trailer_wheelRotation, telem_ptr->truck_f.trailer_wheelRotation + 16, 0.0f);
-	std::fill(telem_ptr->truck_b.trailer_wheelOnGround, telem_ptr->truck_b.trailer_wheelOnGround + 16, false);
+void set_trailer_values_zero() {    
+	  telem_ptr->truck_f.wearTrailer = 0;
+	  std::fill(telem_ptr->truck_ui.trailer_wheelSubstance, telem_ptr->truck_ui.trailer_wheelSubstance+16, 0u);
+	  std::fill(telem_ptr->truck_f.trailer_wheelSuspDeflection, telem_ptr->truck_f.trailer_wheelSuspDeflection + 16, 0.0f);
+	  std::fill(telem_ptr->truck_f.trailer_wheelVelocity, telem_ptr->truck_f.trailer_wheelVelocity + 16, 0.0f);
+	  std::fill(telem_ptr->truck_f.trailer_wheelSteering, telem_ptr->truck_f.trailer_wheelSteering + 16, 0.0f);
+	  std::fill(telem_ptr->truck_f.trailer_wheelRotation, telem_ptr->truck_f.trailer_wheelRotation + 16, 0.0f);
+	  std::fill(telem_ptr->truck_b.trailer_wheelOnGround, telem_ptr->truck_b.trailer_wheelOnGround + 16, false);
 
-	telem_ptr->truck_fv.trailer_lv_accelerationX = 0;
-	telem_ptr->truck_fv.trailer_lv_accelerationY = 0;
-	telem_ptr->truck_fv.trailer_lv_accelerationZ = 0;
+	  telem_ptr->truck_fv.trailer_lv_accelerationX = 0;
+	  telem_ptr->truck_fv.trailer_lv_accelerationY = 0;
+	  telem_ptr->truck_fv.trailer_lv_accelerationZ = 0;
 
-	telem_ptr->truck_fv.trailer_av_accelerationX = 0;
-	telem_ptr->truck_fv.trailer_av_accelerationY = 0;
-	telem_ptr->truck_fv.trailer_av_accelerationZ = 0;
+	  telem_ptr->truck_fv.trailer_av_accelerationX = 0;
+	  telem_ptr->truck_fv.trailer_av_accelerationY = 0;
+	  telem_ptr->truck_fv.trailer_av_accelerationZ = 0;
 
-	telem_ptr->truck_fv.trailer_la_accelerationX = 0;
-	telem_ptr->truck_fv.trailer_la_accelerationY = 0;
-	telem_ptr->truck_fv.trailer_la_accelerationZ = 0;
+	  telem_ptr->truck_fv.trailer_la_accelerationX = 0;
+	  telem_ptr->truck_fv.trailer_la_accelerationY = 0;
+	  telem_ptr->truck_fv.trailer_la_accelerationZ = 0;
 
-	telem_ptr->truck_fv.trailer_aa_accelerationX = 0;
-	telem_ptr->truck_fv.trailer_aa_accelerationY = 0;
-	telem_ptr->truck_fv.trailer_aa_accelerationZ = 0;
+	  telem_ptr->truck_fv.trailer_aa_accelerationX = 0;
+	  telem_ptr->truck_fv.trailer_aa_accelerationY = 0;
+	  telem_ptr->truck_fv.trailer_aa_accelerationZ = 0;
 
-	telem_ptr->config_fv.trailerHookPositionX = 0;
-	telem_ptr->config_fv.trailerHookPositionY = 0;
-	telem_ptr->config_fv.trailerHookPositionZ = 0;
+	  telem_ptr->config_fv.trailerHookPositionX = 0;
+	  telem_ptr->config_fv.trailerHookPositionY = 0;
+	  telem_ptr->config_fv.trailerHookPositionZ = 0;
 
-	telem_ptr->truck_dp.trailer_coordinateX = 0;
-	telem_ptr->truck_dp.trailer_coordinateY = 0;
-	telem_ptr->truck_dp.trailer_coordinateZ = 0;
+	  telem_ptr->truck_dp.trailer_coordinateX = 0;
+	  telem_ptr->truck_dp.trailer_coordinateY = 0;
+	  telem_ptr->truck_dp.trailer_coordinateZ = 0;
 
-	telem_ptr->truck_dp.trailer_rotationX = 0;
-	telem_ptr->truck_dp.trailer_rotationY = 0;
-	telem_ptr->truck_dp.trailer_rotationZ = 0;
+	  telem_ptr->truck_dp.trailer_rotationX = 0;
+	  telem_ptr->truck_dp.trailer_rotationY = 0;
+	  telem_ptr->truck_dp.trailer_rotationZ = 0;
 
-	telem_ptr->config_ui.trailerWheelCount = 0; 
+	  telem_ptr->config_ui.trailerWheelCount = 0; 
 
-	std::fill(telem_ptr->config_f.trailerWheelRadius, telem_ptr->config_f.trailerWheelRadius + 16, 0.0f);
-	std::fill(telem_ptr->config_b.trailerWheelSimulated, telem_ptr->config_b.trailerWheelSimulated + 16, false);
-	std::fill(telem_ptr->config_b.trailerWheelLiftable, telem_ptr->config_b.trailerWheelLiftable + 16, false);
-	std::fill(telem_ptr->config_b.trailerWheelPowered, telem_ptr->config_b.trailerWheelPowered + 16, false);
-	std::fill(telem_ptr->config_b.trailerWheelSteerable, telem_ptr->config_b.trailerWheelSteerable + 16, false);
-	std::fill(telem_ptr->config_fv.trailerWheelPositionX, telem_ptr->config_fv.trailerWheelPositionX + 16, 0.0f);
-	std::fill(telem_ptr->config_fv.trailerWheelPositionY, telem_ptr->config_fv.trailerWheelPositionY + 16, 0.0f);
-	std::fill(telem_ptr->config_fv.trailerWheelPositionZ, telem_ptr->config_fv.trailerWheelPositionZ + 16, 0.0f);
+	  std::fill(telem_ptr->config_f.trailerWheelRadius, telem_ptr->config_f.trailerWheelRadius + 16, 0.0f);
+	  std::fill(telem_ptr->config_b.trailerWheelSimulated, telem_ptr->config_b.trailerWheelSimulated + 16, false);
+	  std::fill(telem_ptr->config_b.trailerWheelLiftable, telem_ptr->config_b.trailerWheelLiftable + 16, false);
+	  std::fill(telem_ptr->config_b.trailerWheelPowered, telem_ptr->config_b.trailerWheelPowered + 16, false);
+	  std::fill(telem_ptr->config_b.trailerWheelSteerable, telem_ptr->config_b.trailerWheelSteerable + 16, false);
+	  std::fill(telem_ptr->config_fv.trailerWheelPositionX, telem_ptr->config_fv.trailerWheelPositionX + 16, 0.0f);
+	  std::fill(telem_ptr->config_fv.trailerWheelPositionY, telem_ptr->config_fv.trailerWheelPositionY + 16, 0.0f);
+	  std::fill(telem_ptr->config_fv.trailerWheelPositionZ, telem_ptr->config_fv.trailerWheelPositionZ + 16, 0.0f);
 
-	memset(telem_ptr->config_s.trailerId, 0, stringsize);
+	  memset(telem_ptr->config_s.trailerId, 0, stringsize);
 }
 
 // Function: telemetry_frame_start
 // Register telemetry values
 SCSAPI_VOID telemetry_frame_start(const scs_event_t UNUSED(event), const void*const event_info,
                                     scs_context_t UNUSED(context)) {
-
     const auto info = static_cast<const scs_telemetry_frame_start_t *>(event_info);
 
     // The following processing of the timestamps is done so the output
@@ -286,20 +269,17 @@ SCSAPI_VOID telemetry_frame_start(const scs_event_t UNUSED(event), const void*co
 
     // When we just initialized itself, assume that the time started
     // just now.
-
     if (last_timestamp == static_cast<scs_timestamp_t>(-1)) {
         last_timestamp = info->paused_simulation_time;
     }
 
     // The timer might be sometimes restarted (e.g. after load) while
     // we want to provide continuous time on our output.
-
     if (info->flags & SCS_TELEMETRY_FRAME_START_FLAG_timer_restart) {
         last_timestamp = 0;
     }
 
     // Advance the timestamp by delta since last frame.
-
     timestamp += info->paused_simulation_time - last_timestamp;
     last_timestamp = info->paused_simulation_time;
 
@@ -319,7 +299,6 @@ SCSAPI_VOID telemetry_frame_start(const scs_event_t UNUSED(event), const void*co
             }
         }
     }
-
 }
 
 // Function: telemetry_pause
@@ -339,25 +318,24 @@ SCSAPI_VOID telemetry_pause(const scs_event_t event, const void*const UNUSED(eve
 SCSAPI_VOID telemetry_configuration(const scs_event_t event, const void*const event_info,
                                      scs_context_t UNUSED(context)) {
     // On configuration change, this function is called.
-    const auto info = static_cast<const scs_telemetry_configuration_t *>(
-        event_info);
+    const auto info = static_cast<const scs_telemetry_configuration_t *>(event_info);
 
     // check which type the event has
-	configType type = {};
+	  configType type = {};
     if(strcmp(info->id,"substances")==0) {
-		type = substances;
+		    type = substances;
     }else if (strcmp(info->id, "controls") == 0) {
-		type = controls;
-	}else if (strcmp(info->id, "hshifter") == 0) {
-		type = hshifter;
-	}else if (strcmp(info->id, "truck") == 0) {
-		type = truck;
-	}else if (strcmp(info->id, "trailer") == 0) {
-		type = trailer;
-	}else if (strcmp(info->id, "job") == 0) {
-		type = job;
-	}else {
-		log_line(SCS_LOG_TYPE_warning, "Something went wrong with this %s",info->id);
+		    type = controls;
+	  }else if (strcmp(info->id, "hshifter") == 0) {
+		    type = hshifter;
+	  }else if (strcmp(info->id, "truck") == 0) {
+		    type = truck;
+	  }else if (strcmp(info->id, "trailer") == 0) {
+		    type = trailer;
+	  }else if (strcmp(info->id, "job") == 0) {
+		    type = job;
+	  }else {
+		    log_line(SCS_LOG_TYPE_warning, "Something went wrong with this %s",info->id);
 	}
 
     // uncomment to log every config, should work but with function not tested ^^`
@@ -374,6 +352,7 @@ SCSAPI_VOID telemetry_configuration(const scs_event_t event, const void*const ev
         } 
         is_empty = false;
     }
+
     // if id of config is "job" but without element and we are on a job -> we finished it now
     if (type==job && is_empty && telem_ptr->special_b.onJob) {
         telem_ptr->special_b.onJob = false;
@@ -384,6 +363,7 @@ SCSAPI_VOID telemetry_configuration(const scs_event_t event, const void*const ev
         // oh hey no job but now we have fields in this array so we start a new job
         telem_ptr->special_b.onJob = true;
     }
+
     // no trailer which is connected with us? than delete information of the sdk and say there is no connected trailer
     if(type==trailer && is_empty) {
 		set_trailer_values_zero();
@@ -487,13 +467,11 @@ SCSAPI_VOID telemetry_store_fplacement(const scs_string_t name, const scs_u32_t 
     *(static_cast<float *>(context) + 5) = value->value_fplacement.orientation.roll;
 }
 
-
 /**
  * @brief Telemetry API initialization function.
  *
  * See scssdk_telemetry.h
  */
-
 SCSAPI_RESULT scs_telemetry_init(const scs_u32_t version, const scs_telemetry_init_params_t*const params) {
     // We currently support only one version.
     if (version != SCS_TELEMETRY_VERSION_1_00) {
@@ -540,35 +518,27 @@ SCSAPI_RESULT scs_telemetry_init(const scs_u32_t version, const scs_telemetry_in
     // Set Game ID 
     if (strcmp(version_params->common.game_id, SCS_GAME_ID_EUT2) == 0) {
         telem_ptr->scs_values.game = 1;
-        telem_ptr->scs_values.telemetry_version_game_major = SCS_GET_MAJOR_VERSION(
-            SCS_TELEMETRY_EUT2_GAME_VERSION_CURRENT);
-        telem_ptr->scs_values.telemetry_version_game_minor = SCS_GET_MINOR_VERSION(
-            SCS_TELEMETRY_EUT2_GAME_VERSION_CURRENT);
+        telem_ptr->scs_values.telemetry_version_game_major = SCS_GET_MAJOR_VERSION(SCS_TELEMETRY_EUT2_GAME_VERSION_CURRENT);
+        telem_ptr->scs_values.telemetry_version_game_minor = SCS_GET_MINOR_VERSION(SCS_TELEMETRY_EUT2_GAME_VERSION_CURRENT);
     }
     else if (strcmp(version_params->common.game_id, SCS_GAME_ID_ATS) == 0) {
         telem_ptr->scs_values.game = 2;
-        telem_ptr->scs_values.telemetry_version_game_major = SCS_GET_MAJOR_VERSION(
-            SCS_TELEMETRY_ATS_GAME_VERSION_CURRENT);
-        telem_ptr->scs_values.telemetry_version_game_minor = SCS_GET_MINOR_VERSION(
-            SCS_TELEMETRY_ATS_GAME_VERSION_CURRENT);
+        telem_ptr->scs_values.telemetry_version_game_major = SCS_GET_MAJOR_VERSION(SCS_TELEMETRY_ATS_GAME_VERSION_CURRENT);
+        telem_ptr->scs_values.telemetry_version_game_minor = SCS_GET_MINOR_VERSION(SCS_TELEMETRY_ATS_GAME_VERSION_CURRENT);
     }
     else {
         // unknown game
-
         log_line(SCS_LOG_TYPE_error, "Unknown Game SDK will not work correctly");
         telem_ptr->scs_values.game = 0;
         telem_ptr->scs_values.telemetry_version_game_major = 0;
         telem_ptr->scs_values.telemetry_version_game_minor = 0;
     }
 
-
     // Model & trailer type are stored in configuration event.
-
 
     /*** REGISTER GAME EVENTS (Pause/Unpause/Start/Time) ***/
     const auto events_registered =
-        version_params->register_for_event(SCS_TELEMETRY_EVENT_frame_start, telemetry_frame_start, nullptr) ==
-        SCS_RESULT_ok &&
+        version_params->register_for_event(SCS_TELEMETRY_EVENT_frame_start, telemetry_frame_start, nullptr) == SCS_RESULT_ok &&
         version_params->register_for_event(SCS_TELEMETRY_EVENT_paused, telemetry_pause, nullptr) == SCS_RESULT_ok &&
         version_params->register_for_event(SCS_TELEMETRY_EVENT_started, telemetry_pause, nullptr) == SCS_RESULT_ok;
 
@@ -582,28 +552,21 @@ SCSAPI_RESULT scs_telemetry_init(const scs_u32_t version, const scs_telemetry_in
     /*** REGISTER ALL TELEMETRY CHANNELS TO OUR SHARED MEMORY MAP ***/
     REGISTER_CHANNEL(CHANNEL_game_time, u32, telem_ptr->common_ui.time_abs);
     REGISTER_CHANNEL(TRAILER_CHANNEL_connected, bool, telem_ptr->truck_b.trailer_attached);
-
     REGISTER_CHANNEL(TRUCK_CHANNEL_speed, float, telem_ptr->truck_f.speed);
     REGISTER_CHANNEL(TRUCK_CHANNEL_local_linear_acceleration, fvector, telem_ptr->truck_fv.accelerationX);
     REGISTER_CHANNEL(TRUCK_CHANNEL_local_linear_velocity, fvector, telem_ptr->truck_fv.lv_accelerationX);
     REGISTER_CHANNEL(TRUCK_CHANNEL_local_angular_acceleration, fvector, telem_ptr->truck_fv.aa_accelerationX);
     REGISTER_CHANNEL(TRUCK_CHANNEL_local_angular_velocity, fvector, telem_ptr->truck_fv.av_accelerationX);
-
     REGISTER_CHANNEL(TRUCK_CHANNEL_world_placement, dplacement, telem_ptr->truck_dp.coordinateX);
-
     REGISTER_CHANNEL(TRUCK_CHANNEL_engine_gear, s32, telem_ptr->truck_i.gear);
     REGISTER_CHANNEL(TRUCK_CHANNEL_displayed_gear, s32, telem_ptr->truck_i.gearDashboard);
-
     REGISTER_CHANNEL(TRUCK_CHANNEL_engine_rpm, float, telem_ptr->truck_f.engineRpm);
-
     REGISTER_CHANNEL(TRUCK_CHANNEL_fuel, float, telem_ptr->truck_f.fuel);
     REGISTER_CHANNEL(TRUCK_CHANNEL_fuel_average_consumption, float, telem_ptr->truck_f.fuelAvgConsumption);
-
     REGISTER_CHANNEL(TRUCK_CHANNEL_input_steering, float, telem_ptr->truck_f.userSteer);
     REGISTER_CHANNEL(TRUCK_CHANNEL_input_throttle, float, telem_ptr->truck_f.userThrottle);
     REGISTER_CHANNEL(TRUCK_CHANNEL_input_brake, float, telem_ptr->truck_f.userBrake);
     REGISTER_CHANNEL(TRUCK_CHANNEL_input_clutch, float, telem_ptr->truck_f.userClutch);
-
     REGISTER_CHANNEL(TRUCK_CHANNEL_effective_steering, float, telem_ptr->truck_f.gameSteer);
     REGISTER_CHANNEL(TRUCK_CHANNEL_effective_throttle, float, telem_ptr->truck_f.gameThrottle);
     REGISTER_CHANNEL(TRUCK_CHANNEL_effective_brake, float, telem_ptr->truck_f.gameBrake);
@@ -615,6 +578,7 @@ SCSAPI_RESULT scs_telemetry_init(const scs_u32_t version, const scs_telemetry_in
     for (auto i = scs_u32_t(0); i < scs_u32_t(2); i++) {
         REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_hshifter_selector, bool, telem_ptr->truck_b.shifterToggle[i], i);
     }
+
     // Booleans
     REGISTER_CHANNEL(TRUCK_CHANNEL_wipers, bool, telem_ptr->truck_b.wipers);
     REGISTER_CHANNEL(TRUCK_CHANNEL_parking_brake, bool, telem_ptr->truck_b.parkBrake);
@@ -662,39 +626,26 @@ SCSAPI_RESULT scs_telemetry_init(const scs_u32_t version, const scs_telemetry_in
     REGISTER_CHANNEL(TRUCK_CHANNEL_navigation_speed_limit, float, telem_ptr->truck_f.speedLimit);
     REGISTER_CHANNEL(TRUCK_CHANNEL_navigation_distance, float, telem_ptr->truck_f.routeDistance);
     REGISTER_CHANNEL(TRUCK_CHANNEL_navigation_time, float, telem_ptr->truck_f.routeTime);
-    REGISTER_CHANNEL(TRUCK_CHANNEL_fuel_range, float, telem_ptr->truck_f.fuelRange);
-
-
+    REGISTER_CHANNEL(TRUCK_CHANNEL_fuel_range, float, telem_ptr->truck_f.fuelRange);    
     REGISTER_CHANNEL(TRAILER_CHANNEL_world_placement, dplacement, telem_ptr->truck_dp.trailer_coordinateX);
-
     REGISTER_CHANNEL(TRAILER_CHANNEL_local_linear_velocity, fvector, telem_ptr->truck_fv.trailer_lv_accelerationX);
     REGISTER_CHANNEL(TRAILER_CHANNEL_local_angular_velocity, fvector, telem_ptr->truck_fv.trailer_la_accelerationX);
-    REGISTER_CHANNEL(TRAILER_CHANNEL_local_linear_acceleration, fvector, telem_ptr->truck_fv.trailer_la_accelerationX
-    );
-    REGISTER_CHANNEL(TRAILER_CHANNEL_local_angular_acceleration, fvector, telem_ptr->truck_fv.
-        trailer_aa_accelerationX
-    );
+    REGISTER_CHANNEL(TRAILER_CHANNEL_local_linear_acceleration, fvector, telem_ptr->truck_fv.trailer_la_accelerationX);
+    REGISTER_CHANNEL(TRAILER_CHANNEL_local_angular_acceleration, fvector, telem_ptr->truck_fv.trailer_aa_accelerationX);
 
     for (auto i = scs_u32_t(0); i < WHEEL_SIZE; i++) {
-        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_on_ground, bool, telem_ptr->truck_b.trailer_wheelOnGround[i],i
-        );
-        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_substance, u32, telem_ptr->truck_ui.trailer_wheelSubstance[i], i
-        );
-        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_velocity, float, telem_ptr->truck_f.trailer_wheelVelocity[i], i
-        );
-        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_steering, float, telem_ptr->truck_f.trailer_wheelSteering[i], i
-        );
-        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_rotation, float, telem_ptr->truck_f.trailer_wheelRotation[i], i
-        );
-        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_susp_deflection, float, telem_ptr->truck_f.
-            trailer_wheelSuspDeflection[i], i);
+        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_on_ground, bool, telem_ptr->truck_b.trailer_wheelOnGround[i],i);
+        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_substance, u32, telem_ptr->truck_ui.trailer_wheelSubstance[i], i);
+        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_velocity, float, telem_ptr->truck_f.trailer_wheelVelocity[i], i);
+        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_steering, float, telem_ptr->truck_f.trailer_wheelSteering[i], i);
+        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_rotation, float, telem_ptr->truck_f.trailer_wheelRotation[i], i);
+        REGISTER_CHANNEL_INDEX(TRAILER_CHANNEL_wheel_susp_deflection, float, telem_ptr->truck_f.trailer_wheelSuspDeflection[i], i);
         REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_on_ground, bool, telem_ptr->truck_b.truck_wheelOnGround[i], i);
         REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_substance, u32, telem_ptr->truck_ui.truck_wheelSubstance[i], i);
         REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_velocity, float, telem_ptr->truck_f.truck_wheelVelocity[i], i);
         REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_steering, float, telem_ptr->truck_f.truck_wheelSteering[i], i);
         REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_rotation, float, telem_ptr->truck_f.truck_wheelRotation[i], i);
-        REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_susp_deflection, float, telem_ptr->truck_f.
-            truck_wheelSuspDeflection[i], i);
+        REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_susp_deflection, float, telem_ptr->truck_f.truck_wheelSuspDeflection[i], i);
         REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_lift, float, telem_ptr->truck_f.truck_wheelLift[i], i);
         REGISTER_CHANNEL_INDEX(TRUCK_CHANNEL_wheel_lift_offset, float, telem_ptr->truck_f.truck_wheelLiftOffset[i], i
         );
@@ -706,17 +657,15 @@ SCSAPI_RESULT scs_telemetry_init(const scs_u32_t version, const scs_telemetry_in
     REGISTER_CHANNEL(CHANNEL_next_rest_stop, s32, telem_ptr->common_i.restStop);
     REGISTER_CHANNEL(CHANNEL_local_scale, float, telem_ptr->common_f.scale);
     REGISTER_CHANNEL(TRUCK_CHANNEL_head_offset, fplacement, telem_ptr->truck_fp.headOffsetX);
+
     // MISSING: (Will be added on wish) see also on config handler
     // actually should nothing miss here (1.9)
-
     // Set the structure with defaults.
-
     timestamp = static_cast<scs_timestamp_t>(0);
     last_timestamp = static_cast<scs_timestamp_t>(-1);
 
     return SCS_RESULT_ok;
 }
-
 
 /**
  * @brief Telemetry API deinitialization function.
@@ -734,17 +683,15 @@ SCSAPI_VOID scs_telemetry_shutdown() {
 }
 
 // Telemetry api.
-
 // ReSharper disable once CppInconsistentNaming
 BOOL APIENTRY DllMain(
     HMODULE module,
     DWORD reason_for_call,
-    LPVOID reseved
-) {
+    LPVOID reseved) 
+{
     if (reason_for_call == DLL_PROCESS_DETACH) {
-
         scs_telemetry_shutdown();
-
     }
+
     return TRUE;
 }

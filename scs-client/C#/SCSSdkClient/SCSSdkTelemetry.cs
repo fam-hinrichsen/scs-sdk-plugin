@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Runtime.Remoting.Lifetime;
 using System.Threading;
-using System.Windows.Forms.VisualStyles;
 using SCSSdkClient.Object;
+
 //TODO: possible idea: check if ets is running and if not change updaterate to infinity (why most of the user may not quit the application while ets is running)
-namespace SCSSdkClient {
+namespace SCSSdkClient
+{
     public delegate void TelemetryData(SCSTelemetry data, bool newTimestamp);
 
     /// <summary>
@@ -124,12 +124,13 @@ namespace SCSSdkClient {
                 if (scsTelemetry.SpecialEventsValues.TrailerConnected)
                 {
                     TrailerConnected?.Invoke(this, new EventArgs());
-                } else {
+                } 
+                else 
+                {
                     TrailerDisconnected?.Invoke(this, new EventArgs());
                 }
             }
-
-            
+                        
             lastTime = time;
         }
 #if LOGGING

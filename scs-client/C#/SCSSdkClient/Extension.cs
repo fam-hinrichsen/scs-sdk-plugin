@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Runtime.Remoting.Messaging;
 
-namespace SCSSdkClient {
+namespace SCSSdkClient
+{
     /// <summary>
     ///     Some useful extensions
     /// </summary>
@@ -39,13 +39,14 @@ namespace SCSSdkClient {
                     continue;
                 }
 
-
                 while (cha == '\n' || cha == '\t') {
                     index++;
                     cha = choob[index];
                     if (cha == '\n' || cha == '\t') {
                         result += cha;
-                    } else {
+                    } 
+                    else
+                    {
                         result += '\t';
                         result += cha;
                     }

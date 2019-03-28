@@ -170,8 +170,6 @@ scsConfigHandle(Substances, Id) {
 #endif
     }
 }
-
-
 #pragma endregion All handler of the id substances
 
 #pragma region handleControls
@@ -347,7 +345,6 @@ scsConfigHandle(Truck, WheelRadius) {
 }
 
 scsConfigHandle(Truck, WheelPowered) {
-
     const auto position = current->index;
     const auto ratio = current->value.value_bool;
 
@@ -446,7 +443,6 @@ scsConfigHandle(Trailer, WheelRadius) {
 }
 
 scsConfigHandle(Trailer, WheelPowered) {
-
     const auto position = current->index;
     const auto ratio = current->value.value_bool;
 
@@ -464,7 +460,6 @@ scsConfigHandle(Trailer, WheelLiftable) {
     }
 }
 #pragma endregion All handler for the id trailer
-
 
 #pragma region handleJob
 scsConfigHandle(Job, CargoId) {
@@ -494,7 +489,6 @@ scsConfigHandle(Job, CitySrcId) {
 scsConfigHandle(Job, CitySrc) {
     strncpy_s(telem_ptr->config_s.citySrc, current->value.value_string.value, stringsize);
 }
-
 
 scsConfigHandle(Job, CompDstId) {
     strncpy_s(telem_ptr->config_s.compDstId, current->value.value_string.value, stringsize);

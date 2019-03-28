@@ -18,7 +18,6 @@ namespace SCSSdkClient {
         private byte[] _data;
         private int _offset;
  
-
         private readonly int[] _offsetAreas =
             {0, 40, 500, 700, 1800, 2000, 2600, 2800, 3000, 4800, 5000, 5200, 6800};
 
@@ -40,8 +39,7 @@ namespace SCSSdkClient {
  
             _offsetArea = 0;
             SetOffset();
-
-
+            
             _data = structureDataBytes;
             var retData = new SCSTelemetry();
 
@@ -49,8 +47,7 @@ namespace SCSSdkClient {
  
             retData.Timestamp = GetUint();
             retData.Paused = GetBool();
-
-
+            
             NextOffsetArea();
 
             #endregion
@@ -119,8 +116,7 @@ namespace SCSSdkClient {
             retData.TrailerValues.WheelsConstant.Radius=  GetFloatArray(WheelSize); 
             retData.TruckValues.ConstantsValues.MotorValues.GearRatiosForward = GetFloatArray(24);
             retData.TruckValues.ConstantsValues.MotorValues.GearRatiosReverse = GetFloatArray(8);
-
-
+            
             retData.TruckValues.CurrentValues.DashboardValues.Speed.Value = GetFloat();
             retData.TruckValues.CurrentValues.DashboardValues.RPM = GetFloat();
             retData.ControlValues.InputValues.Steering = GetFloat();
@@ -149,8 +145,7 @@ namespace SCSSdkClient {
             retData.TruckValues.CurrentValues.DamageValues.Chassis = GetFloat();
             retData.TruckValues.CurrentValues.DamageValues.WheelsAvg = GetFloat();
             retData.TrailerValues.Damage = GetFloat();
-
-
+            
             retData.TruckValues.CurrentValues.DashboardValues.Odometer = GetFloat();
             retData.NavigationValues.NavigationDistance = GetFloat();
             retData.NavigationValues.NavigationTime = GetFloat();
@@ -165,8 +160,7 @@ namespace SCSSdkClient {
             retData.TruckValues.CurrentValues.WheelsValues.Rotation = GetFloatArray(WheelSize);
             retData.TruckValues.CurrentValues.WheelsValues.Lift = GetFloatArray(WheelSize);
             retData.TruckValues.CurrentValues.WheelsValues.LiftOffset = GetFloatArray(WheelSize);
-
-
+            
             NextOffsetArea();
 
             #endregion
@@ -211,7 +205,6 @@ namespace SCSSdkClient {
             retData.TrailerValues.Wheelvalues.OnGround = GetBoolArray(WheelSize);
             retData.TruckValues.CurrentValues.WheelsValues.OnGround = GetBoolArray(WheelSize);
             retData.TruckValues.CurrentValues.MotorValues.GearValues.HShifterSelector = GetBoolArray(2);
-
 
             NextOffsetArea();
 
@@ -274,8 +267,7 @@ namespace SCSSdkClient {
 
             retData.TruckValues.Positioning.CabinOffset = GetFPlacement();
             retData.TruckValues.Positioning.HeadOffset = GetFPlacement();
-
-
+            
             NextOffsetArea();
 
             #endregion
@@ -284,7 +276,6 @@ namespace SCSSdkClient {
 
             retData.SetTruckPosition(GetDPlacement());
             retData.TrailerValues.Position = GetDPlacement();
-
 
             NextOffsetArea();
 
@@ -312,7 +303,6 @@ namespace SCSSdkClient {
             if (tempShift?.Length > 0) {
                 retData.TruckValues.ConstantsValues.MotorValues.ShifterTypeValue = tempShift.ToEnum<ShifterType>();
             }
-
 
             NextOffsetArea();
 
@@ -413,8 +403,7 @@ namespace SCSSdkClient {
             _offset += length;
             return ret;
         }
-
-
+        
         private void NextOffsetArea() {
             _offsetArea++;
             SetOffset();

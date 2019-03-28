@@ -29,7 +29,6 @@ namespace SCSSdkClient.Object {
             Substances = new List<Substance>();
         }
 
-
         /// About: Currency
         ///  
         /// - ATS use US Dollars as internal currency
@@ -85,8 +84,7 @@ namespace SCSSdkClient.Object {
         /// Does NOT match the patch level of the game.
         /// <!----> **INFORMATION** <!---->
         public Version GameVersion { get; internal set; }
-
-
+        
         /// <summary>
         ///     Version/Revision of the dll
         /// </summary>
@@ -159,7 +157,6 @@ namespace SCSSdkClient.Object {
         internal static DateTime MinutesToDate(int minutes) =>
             new DateTime((long)Math.Abs(minutes) * 10000000 * 60, DateTimeKind.Utc);
 
-
         /// <summary>
         ///     Adds two float vectors
         /// </summary>
@@ -216,22 +213,22 @@ namespace SCSSdkClient.Object {
             var sinRoll = Math.Sin(rollRadians);
 
             // Roll around Z axis
-            var postRollX = vector.X * cosRoll - vector.Y * sinRoll;
-            var postRollY = vector.X * sinRoll + vector.Y * cosRoll;
+            var postRollX = (vector.X * cosRoll) - (vector.Y * sinRoll);
+            var postRollY = (vector.X * sinRoll) + (vector.Y * cosRoll);
             var postRollZ = vector.Z;
 
             // Pitch around X axis
             var postPitchX = postRollX;
-            var postPitchY = postRollY * cosPitch - postRollZ * sinPitch;
-            var postPitchZ = postRollY * sinPitch + postRollZ * cosPitch;
+            var postPitchY = (postRollY * cosPitch) - (postRollZ * sinPitch);
+            var postPitchZ = (postRollY * sinPitch) + (postRollZ * cosPitch);
 
             // heading around y axis
 
             return new FVector
             {
-                X = (float)(postPitchX * cosHeading + postPitchZ * sinHeading),
+                X = (float)((postPitchX * cosHeading) + (postPitchZ * sinHeading)),
                 Y = (float)postPitchY,
-                Z = (float)(-postPitchX * sinHeading + postPitchZ * cosHeading)
+                Z = (float)((-postPitchX * sinHeading) + (postPitchZ * cosHeading))
             };
         }
 
@@ -246,7 +243,6 @@ namespace SCSSdkClient.Object {
             {
                 JobValues.RemainingDeliveryTime.Value = 0;
             }
-
         }
 
         internal void SetTruckPosition(DPlacement position)
