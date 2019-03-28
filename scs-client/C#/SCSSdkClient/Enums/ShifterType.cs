@@ -1,4 +1,4 @@
-﻿namespace SCSSdkClient {
+﻿namespace SCSSdkClient.Enums {
     /// <summary>
     /// Shifter Type
     /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace SCSSdkClient {
+﻿namespace SCSSdkClient.Enums {
     /// <summary>
     ///     Intensity Level of Auxiliary Lights
     /// </summary>

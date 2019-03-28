@@ -12,6 +12,8 @@ namespace SCSSdkClient
     ///     Currently IDisposable. Was implemented because of an error 
     /// </summary>
     public class SCSSdkTelemetry : IDisposable {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private const string DefaultSharedMemoryMap = "Local\\SimTelemetrySCS";
         private const int DefaultUpdateInterval = 25;
 
@@ -19,19 +21,12 @@ namespace SCSSdkClient
 
         private uint lastTime = 0xFFFFFFFF;
 
-
-#if LOGGING
         public void Dispose() {
             _updateTimer?.Dispose();
-            Log.SaveShutdown();
+            log.Info("Shutdown SCSSdkTelemetry");
         }
-#else
-         public void Dispose() => _updateTimer?.Dispose();
-
-#endif
         
-
-    private SharedMemory SharedMemory;
+        private SharedMemory SharedMemory;
         private bool wasFinishingJob;
 
         private bool wasOnJob;
@@ -58,11 +53,13 @@ namespace SCSSdkClient
 
         public void pause() {
             _updateTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            log.Info("Game paused");
         }
 
         public void resume() {
             var tsInterval = new TimeSpan(0, 0, 0, 0, UpdateInterval);
             _updateTimer.Change(tsInterval, tsInterval);
+            log.Info("Game resumed");
         }
 
         /// <summary>
@@ -72,11 +69,10 @@ namespace SCSSdkClient
         /// <param name="map">Memory Map location</param>
         /// <param name="interval">Timebase interval</param>
         private void Setup(string map, int interval) {
-#if LOGGING
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            Log.Write("Start of the Telemetry");
-            Log.Write("Set up everything and start the updatetimer");
-#endif
+            log.Info("Start of the Telemetry");
+            log.Debug("Set up everything and start the updatetimer");
 
             Map = map;
             UpdateInterval = interval;
@@ -92,9 +88,8 @@ namespace SCSSdkClient
             var tsInterval = new TimeSpan(0, 0, 0, 0, interval);
 
             _updateTimer = new Timer(_updateTimer_Elapsed, null, tsInterval, tsInterval);
-#if LOGGING
-            Log.Write("Every thing is set up correctly and the timer was started");
-#endif
+
+            log.Debug("Every thing is set up correctly and the timer was started");
 
         }
 
@@ -133,13 +128,11 @@ namespace SCSSdkClient
                         
             lastTime = time;
         }
-#if LOGGING
+
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
             try {
                 var ex = (Exception) e.ExceptionObject;
-                Console.WriteLine("Fatal unhandled Exception... pls create an issue and add the log file on github");
-                Log.Write(ex.ToString());
-                Log.SaveShutdown();
+                log.Fatal("Unhandled Exception... pls create an issue and add the log file on github");
             } catch (Exception ex) {
                 try {
                     Console.WriteLine("Can't write log / or close it after an unhandled Exception: "+ex);
@@ -148,6 +141,5 @@ namespace SCSSdkClient
                 }
             }
         }
-#endif
     }
 }

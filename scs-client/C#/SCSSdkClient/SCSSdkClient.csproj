@@ -37,8 +37,18 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Sharpbrake.Client, Version=5.0.5.0, Culture=neutral, PublicKeyToken=c5537f4669e4dbaa, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sharpbrake.Client.5.0.5\lib\net452\Sharpbrake.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Sharpbrake.Log4net, Version=2.0.5.0, Culture=neutral, PublicKeyToken=c5537f4669e4dbaa, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Sharpbrake.Log4net.2.0.5\lib\net452\Sharpbrake.Log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,9 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuxLevel.cs" />
+    <Compile Include="Enums\AuxLevel.cs" />
     <Compile Include="Extension.cs" />
-    <Compile Include="Log.cs" />
     <Compile Include="Object\Acceleration.cs" />
     <Compile Include="Object\control\Game.cs" />
     <Compile Include="Object\control\Input.cs" />
@@ -96,7 +105,13 @@
     <Compile Include="Object\truck\current\Current.cs" />
     <Compile Include="Object\Version.cs" />
     <Compile Include="SharedMemory.cs" />
-    <Compile Include="ShifterType.cs" />
+    <Compile Include="Enums\ShifterType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

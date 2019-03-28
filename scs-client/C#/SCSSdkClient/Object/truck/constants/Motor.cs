@@ -1,4 +1,6 @@
-﻿namespace SCSSdkClient.Object.truck.constants
+﻿using SCSSdkClient.Enums;
+
+namespace SCSSdkClient.Object.truck.constants
 {
     /// <summary>
     ///     Gear, Retarder, etc.
