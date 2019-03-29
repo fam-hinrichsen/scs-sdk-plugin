@@ -13,7 +13,8 @@ namespace SCSSdkClient.Demo {
         public SCSSdkTelemetry Telemetry;
 
         /// <inheritdoc />
-        public SCSSdkClientDemo() {
+        public SCSSdkClientDemo()
+        {
             InitializeComponent();
             Telemetry = new SCSSdkTelemetry();
             Telemetry.Data += Telemetry_Data;
