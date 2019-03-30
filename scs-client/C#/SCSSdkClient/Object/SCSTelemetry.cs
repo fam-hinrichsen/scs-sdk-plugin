@@ -29,17 +29,6 @@ namespace SCSSdkClient.Object {
             Substances = new List<Substance>();
         }
 
-        /// About: Currency
-        ///  
-        /// - ATS use US Dollars as internal currency
-        /// - ETS2 use Euro as internal currency
-        ///  
-        /// About: GameVersion
-        /// Does *NOT* match the patch level of the game
-        /// 
-        /// About: Temperatures
-        /// Aproximated for entire truck, not at the wheel level.
-
         /// <summary>
         ///     Timestamp not the in game time,
         /// </summary>
@@ -52,12 +41,12 @@ namespace SCSSdkClient.Object {
         /// <example>
         ///     Driving
         ///     <code>
-        /// Paused == true
-        /// </code>
+        ///         Paused == true
+        ///     </code>
         ///     Menu/Map
         ///     <code>
-        /// Paused == false
-        /// </code>
+        ///         Paused == false
+        ///     </code>
         /// </example>
         public bool Paused { get; internal set; }
 
@@ -67,22 +56,20 @@ namespace SCSSdkClient.Object {
         /// <example>
         ///     Running game is EuroTruckSimulator2
         ///     <code>
-        /// Game == SCSGame.Ets2
-        /// </code>
+        ///         Game == SCSGame.Ets2
+        ///     </code>
         ///     Running game is AmericanTruckSimulator
         ///     <code>
-        /// Game == SCSGame.Ats
-        /// </code>
+        ///         Game == SCSGame.Ats
+        ///     </code>
         /// </example>
         /// <seealso cref="SCSGame" />
         public SCSGame Game { get; internal set; }
 
         /// <summary>
         ///     Version of the game for purpose of the specific api which is being initialized.
+        ///     Does *NOT* match the patch level of the game
         /// </summary>
-        /// <!----> **INFORMATION** <!---->
-        /// Does NOT match the patch level of the game.
-        /// <!----> **INFORMATION** <!---->
         public Version GameVersion { get; internal set; }
         
         /// <summary>
@@ -127,6 +114,7 @@ namespace SCSSdkClient.Object {
         ///     Navigation values
         /// </summary>
         public Navigation NavigationValues { get; internal set; }
+
         /// <summary>
         ///     Contains special Event Values like onJob and JobFinished
         /// </summary>
@@ -144,8 +132,7 @@ namespace SCSSdkClient.Object {
         /// <returns>
         ///     DateTime object of the in-game time
         /// </returns>
-        internal static DateTime MinutesToDate(uint minutes) =>
-            new DateTime((long)minutes * 10000000 * 60, DateTimeKind.Utc);
+        internal static DateTime MinutesToDate(uint minutes) => new DateTime((long)minutes * 10000000 * 60, DateTimeKind.Utc);
 
         /// <summary>
         ///     Converts int minutes in a DateTime object
@@ -154,8 +141,7 @@ namespace SCSSdkClient.Object {
         /// <returns>
         ///     DateTime object of the in-game time
         /// </returns>
-        internal static DateTime MinutesToDate(int minutes) =>
-            new DateTime((long)Math.Abs(minutes) * 10000000 * 60, DateTimeKind.Utc);
+        internal static DateTime MinutesToDate(int minutes) => new DateTime((long)Math.Abs(minutes) * 10000000 * 60, DateTimeKind.Utc);
 
         /// <summary>
         ///     Adds two float vectors
@@ -169,8 +155,7 @@ namespace SCSSdkClient.Object {
         /// <returns>
         ///     Sum of both Float Vectors
         /// </returns>
-        public static FVector Add(FVector first, FVector second) =>
-            new FVector { X = first.X + second.X, Y = first.Y + second.Y, Z = first.Z + second.Z };
+        public static FVector Add(FVector first, FVector second) => new FVector { X = first.X + second.X, Y = first.Y + second.Y, Z = first.Z + second.Z };
 
         /// <summary>
         ///     Adds float vector to double vector
@@ -184,8 +169,7 @@ namespace SCSSdkClient.Object {
         /// <returns>
         ///     sum as double vector
         /// </returns>
-        public static DVector Add(DVector first, FVector second) =>
-            new DVector { X = first.X + second.X, Y = first.Y + second.Y, Z = first.Z + second.Z };
+        public static DVector Add(DVector first, FVector second) => new DVector { X = first.X + second.X, Y = first.Y + second.Y, Z = first.Z + second.Z };
 
         /// <summary>
         ///     Rotates specified vector by specified orientation
@@ -223,7 +207,6 @@ namespace SCSSdkClient.Object {
             var postPitchZ = (postRollY * sinPitch) + (postRollZ * cosPitch);
 
             // heading around y axis
-
             return new FVector
             {
                 X = (float)((postPitchX * cosHeading) + (postPitchZ * sinHeading)),

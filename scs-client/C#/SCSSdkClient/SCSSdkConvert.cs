@@ -33,8 +33,7 @@ namespace SCSSdkClient {
         /// <returns>
         /// C# object with game data of the shared memory
         /// </returns>
-        public SCSTelemetry Convert(byte[] structureDataBytes) {
- 
+        public SCSTelemetry Convert(byte[] structureDataBytes) { 
             _offsetArea = 0;
             SetOffset();
             
