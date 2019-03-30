@@ -91,17 +91,12 @@ void log_line(const char*const text, ...) {
     game_log(SCS_LOG_TYPE_error, formated);
 }
 
-
 // Function: log_configs
 // It print every config event that appears to the in game log
 // careful, create a lot of logs so that fast parts are not readable anymore in the log window
 void log_configs(const scs_telemetry_configuration_t* info) { 
     log_line("Configuration: %s", info->id);
     for (auto current = info->attributes; current->name; ++current) {
-        if (current->index != SCS_U32_NIL) {
-           // log_line("[%u]", static_cast<unsigned>(current->index));
-        }
-
         switch (current->value.type) {
             case SCS_VALUE_TYPE_INVALID: 
                 log_line(" %s none", current->name);
@@ -313,6 +308,27 @@ SCSAPI_VOID telemetry_pause(const scs_event_t event, const void*const UNUSED(eve
     }
 }
 
+configType getType(scs_string_t id){
+  	configType type = {};
+    if(strcmp(id,"substances")==0) {
+		    type = substances;
+    }else if (strcmp(id, "controls") == 0) {
+		    type = controls;
+	  }else if (strcmp(id, "hshifter") == 0) {
+		    type = hshifter;
+	  }else if (strcmp(id, "truck") == 0) {
+		    type = truck;
+	  }else if (strcmp(id, "trailer") == 0) {
+		    type = trailer;
+	  }else if (strcmp(id, "job") == 0) {
+		    type = job;
+	  }else {
+		    log_line(SCS_LOG_TYPE_warning, "Something went wrong with this %s", id);
+	  }
+
+    return type;
+}
+
 // Function: telemetry_configuration
 // called if the game fires the event configuration. Used to handle all the configuration values
 SCSAPI_VOID telemetry_configuration(const scs_event_t event, const void*const event_info,
@@ -321,22 +337,7 @@ SCSAPI_VOID telemetry_configuration(const scs_event_t event, const void*const ev
     const auto info = static_cast<const scs_telemetry_configuration_t *>(event_info);
 
     // check which type the event has
-	  configType type = {};
-    if(strcmp(info->id,"substances")==0) {
-		    type = substances;
-    }else if (strcmp(info->id, "controls") == 0) {
-		    type = controls;
-	  }else if (strcmp(info->id, "hshifter") == 0) {
-		    type = hshifter;
-	  }else if (strcmp(info->id, "truck") == 0) {
-		    type = truck;
-	  }else if (strcmp(info->id, "trailer") == 0) {
-		    type = trailer;
-	  }else if (strcmp(info->id, "job") == 0) {
-		    type = job;
-	  }else {
-		    log_line(SCS_LOG_TYPE_warning, "Something went wrong with this %s",info->id);
-	}
+    configType type = getType(info->id);
 
     // uncomment to log every config, should work but with function not tested ^^`
     //log_configs(info); 
@@ -348,8 +349,9 @@ SCSAPI_VOID telemetry_configuration(const scs_event_t event, const void*const ev
     for ( auto current = info->attributes; current->name; ++current) {
         if(!handleCfg(current, type)) {
             // actually only for testing/debug purpose, so should there be a message in game with that line there is missed something
-			log_line("attribute not handled id: %i attribute: %s", type, current->name);
+			      log_line("attribute not handled id: %i attribute: %s", type, current->name);
         } 
+
         is_empty = false;
     }
 
@@ -366,12 +368,12 @@ SCSAPI_VOID telemetry_configuration(const scs_event_t event, const void*const ev
 
     // no trailer which is connected with us? than delete information of the sdk and say there is no connected trailer
     if(type==trailer && is_empty) {
-		set_trailer_values_zero();
-		telem_ptr->special_b.trailerConnected = false;
+		    set_trailer_values_zero();
+		    telem_ptr->special_b.trailerConnected = false;
     }else if(type == trailer && !is_empty && !telem_ptr->special_b.trailerConnected) {
         // there exist trailer information and actually we say there is no connected trailer. That can't be true anymore
         // so say we are connected to a trailer
-		telem_ptr->special_b.trailerConnected = true;
+		    telem_ptr->special_b.trailerConnected = true;
     }
 }
 
@@ -446,7 +448,6 @@ SCSAPI_VOID telemetry_store_dplacement(const scs_string_t name, const scs_u32_t 
     *(static_cast<double *>(context) + 3) = value->value_dplacement.orientation.heading;
     *(static_cast<double *>(context) + 4) = value->value_dplacement.orientation.pitch;
     *(static_cast<double *>(context) + 5) = value->value_dplacement.orientation.roll;
-
 }
 
 SCSAPI_VOID telemetry_store_fplacement(const scs_string_t name, const scs_u32_t index, const scs_value_t*const value,
