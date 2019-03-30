@@ -1,1 +1,0 @@
-NDContentPage.OnToolTipsLoaded({499:"<div class=\"NDToolTip TProperty LCSharp\"><div id=\"NDPrototype499\" class=\"NDPrototype NoParameterForm\"><span class=\"SHKeyword\">public uint</span> RetarderStepCount { <span class=\"SHKeyword\">get</span>; <span class=\"SHKeyword\">internal set</span> }</div><div class=\"TTSummary\">Number of steps in the retarder</div></div>"});

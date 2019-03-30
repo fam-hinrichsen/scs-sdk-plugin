@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("too",["Function"],[["ToObject",,[["SCSSdkClient.SharedMemory",,,,0,"File:SharedMemory.cs:SCSSdkClient.SharedMemory.ToObject","CSharpClass:SCSSdkClient.SharedMemory:ToObject"]]]]);

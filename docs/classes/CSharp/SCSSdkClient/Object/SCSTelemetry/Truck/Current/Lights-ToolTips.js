@@ -1,1 +1,0 @@
-NDContentPage.OnToolTipsLoaded({333:"<div class=\"NDToolTip TEnumeration LCSharp\"><div id=\"NDPrototype333\" class=\"NDPrototype NoParameterForm\"><span class=\"SHKeyword\">public enum</span> AuxLevel</div><div class=\"TTSummary\">Intensity Level of Auxiliary Lights</div></div>"});

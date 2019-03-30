@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("cha",["Property"],[["Chassis",,[["SCSSdkClient.Object.SCSTelemetry.Truck.Current.Damage",,,,0,"File:Object/SCSTelemetry.Truck.Current.cs:SCSSdkClient.Object.SCSTelemetry.Truck.Current.Damage.Chassis","CSharpClass:SCSSdkClient.Object.SCSTelemetry.Truck.Current.Damage:Chassis"]]]]);
