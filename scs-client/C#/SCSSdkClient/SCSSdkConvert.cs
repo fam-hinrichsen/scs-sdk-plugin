@@ -417,7 +417,7 @@ namespace SCSSdkClient {
 
         private string GetString(int length = StringSize) {
             var area = GetSubArray(length);
-            return Encoding.UTF8.GetString(area).Replace('\0', ' ').Trim();
+            return Encoding.UTF8.GetString(area).Substring(0, Encoding.UTF8.GetString(area).IndexOf('\0'));
         }
 
         private uint[] GetUintArray(int length) {
